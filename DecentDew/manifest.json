@@ -1,0 +1,10 @@
+﻿{
+  "Name": "DecentDew",
+  "Author": "coruscar",
+  "Version": "1.0.0",
+  "Description": "This mod adds Dew, Decently",
+  "UniqueID": "coruscar.DecentDew",
+  "EntryDll": "DecentDew.dll",
+  "MinimumApiVersion": "2.9",
+  "UpdateKeys": []
+}
