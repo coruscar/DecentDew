@@ -4,6 +4,10 @@ using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewModdingAPI.Utilities;
 using StardewValley;
+using PyTK.Extensions;
+using PyTK.Types;
+using PyTK.CustomElementHandler;
+using PyTK.CustomTV;
 
 namespace DecentDew
 {
@@ -15,12 +19,21 @@ namespace DecentDew
         *********/
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
+        internal static IModHelper _helper;
+        internal static IMonitor _monitor;
+        internal static EventHandler<EventArgsClickableMenuChanged> addtoshop;
+
         public override void Entry(IModHelper helper)
         {
             helper.Events.Input.ButtonPressed += this.OnButtonPressed;
+            _monitor = Monitor;
+            _helper = helper;
+            addtoshop = new InventoryItem(new DecentBag(), 30000, 1).addToNPCShop("Pierre");
         }
 
 
+        //Keys.K.onPressed(() => Monitor.Log($"K pressed"));
+        //Keys.J.onPressed(yourMethod);
         /*********
         ** Private methods
         *********/
@@ -36,5 +49,6 @@ namespace DecentDew
             // print button presses to the console window
             this.Monitor.Log($"{Game1.player.Name} pressed {e.Button}.");
         }
+
     }
 }

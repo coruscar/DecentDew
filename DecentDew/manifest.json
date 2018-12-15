@@ -6,5 +6,11 @@
   "UniqueID": "coruscar.DecentDew",
   "EntryDll": "DecentDew.dll",
   "MinimumApiVersion": "2.9",
-  "UpdateKeys": []
+  "UpdateKeys": [],
+  "Dependencies": [
+    {
+      "UniqueID": "Platonymous.Toolkit",
+      "MinimumVersion": "1.4.24"
+    }
+  ]
 }
