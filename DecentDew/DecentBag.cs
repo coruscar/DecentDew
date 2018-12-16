@@ -17,7 +17,7 @@ using PyTK.CustomElementHandler;
 
 namespace DecentDew
 {
-    public class DecentBag : Mod, ISaveElement
+    public class DecentBag : Hoe, ISaveElement
     {
 
         internal static Texture2D texture;

@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PyTK", "PyTK\PyTK.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeedBag", "SeedBag\SeedBag.csproj", "{C587A2BF-75F6-46F2-AD2A-30FAED3E2AA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ATM", "ATM\ATM.csproj", "{BFAE37BE-0EE7-4D3C-B2AF-99674E183909}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "noATM", "ATM\noATM.csproj", "{BFAE37BE-0EE7-4D3C-B2AF-99674E183909}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
