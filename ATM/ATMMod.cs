@@ -16,7 +16,7 @@ namespace ATM
     {
         internal static Config config;
         internal ITranslationHelper i18n => Helper.Translation;
-        //internal BankAccount bankAccount;
+        internal BankAccount bankAccount;
         internal List<Response> responses;
 
         public override void Entry(IModHelper helper)
@@ -36,8 +36,14 @@ namespace ATM
             var openATMAction = new TileAction("OpenATM", openATM);
             openATMAction.register();
 
+            var openATOMAction = new TileAction("OpenATOM", openATOM);
+            openATOMAction.register();
+
             var atm = TMXContent.Load(Path.Combine("Assets", "atm.tmx"), Helper);
             atm.injectInto(@"Maps/" + config.Map, new Vector2(config.Position[0], config.Position[1]), null);
+            var atom = TMXContent.Load(Path.Combine("Assets", "atom.tmx"), Helper);
+            atom.injectInto(@"Maps/" + config.Map, new Vector2(config.Position[0]-1, config.Position[1]), null);
+
         }
 
         private bool openATM(string action, GameLocation location, Vector2 tileposition, string layer)
@@ -48,8 +54,21 @@ namespace ATM
                 return true;
             }
 
-            //string text = i18n.Get("Account_Ballance") + ": " + bankAccount.Balance + "g. " + (config.Credit ? i18n.Get("Line_Credit") + ": " + bankAccount.CreditLine + "g" : "");
-            //Game1.currentLocation.createQuestionDialogue(text, responses.ToArray(), nextMenu);
+            string text = i18n.Get("Account_Ballance") + ": INJECTED" + bankAccount.Balance + "g. " + (config.Credit ? i18n.Get("Line_Credit") + ": " + bankAccount.CreditLine + "g" : "");
+            Game1.currentLocation.createQuestionDialogue(text, responses.ToArray(), nextMenu);
+            return true;
+        }
+
+        private bool openATOM(string action, GameLocation location, Vector2 tileposition, string layer)
+        {
+            if (!Game1.IsMasterGame)
+            {
+                Game1.addHUDMessage(new HUDMessage(i18n.Get("Fail_Main")));
+                return true;
+            }
+
+            //string text = "Nifty quest dialogue";
+            Game1.currentLocation.createQuestionDialogue("oh boy" , responses.ToArray(), nextMenu);
             return true;
         }
 
@@ -60,42 +79,131 @@ namespace ATM
 
             var text = responses.Find(r => r.responseKey == key).responseText;
 
+            Game1.activeClickableMenu = new NumberSelectionMenu(text, (number, price, farmer) => processOrder(number, price, farmer, key), -1, 0, (key != "ATM_Withdraw") ? (key == "ATM_Daily_Deposit") ? Math.Max(Game1.player.money, bankAccount.DailyMoneyOrder) : Game1.player.Money : bankAccount.AvailableMoney, (key == "ATM_Daily_Deposit") ? bankAccount.DailyMoneyOrder : Math.Min((key != "ATM_Withdraw") ? Game1.player.money : bankAccount.AvailableMoney, 100));
+
             //Game1.activeClickableMenu = new NumberSelectionMenu(text, (number, price, farmer) => processOrder(number, price, farmer, key), -1, 0, (key != "ATM_Withdraw") ? (key == "ATM_Daily_Deposit") ? Math.Max(Game1.player.money, bankAccount.DailyMoneyOrder) : Game1.player.Money : bankAccount.AvailableMoney, (key == "ATM_Daily_Deposit") ? bankAccount.DailyMoneyOrder : Math.Min((key != "ATM_Withdraw") ? Game1.player.money : bankAccount.AvailableMoney, 100));
+            //my own messing around
+            //Game1.activeClickableMenu = new NumberSelectionMenu(text, (number, price, farmer) => processOrder(number, price, farmer, key), -1, 0, (key != "ATM_Withdraw") ? (key == "ATM_Daily_Deposit") ? Math.Max(Game1.player.money, 1000) : Game1.player.Money : 1000, (key == "ATM_Daily_Deposit") ? 1000 : Math.Min((key != "ATM_Withdraw") ? Game1.player.money : 10000, 100));
+        }
+
+        private void processOrder(int number, int price, Farmer who, string key)
+        {
+            //if (key == "ATM_Deposit")
+            //{
+            //    Game1.player.Money -= number;
+            //    bankAccount.ActualBalance += number;
+            //}
+            //else if (key == "ATM_Daily_Deposit")
+            //    bankAccount.DailyMoneyOrder = number;
+            //else if (key == "ATM_Deposit")
+            //{
+            //    Game1.player.Money -= number;
+            //    bankAccount.ActualBalance += number;
+            //}
+            //else if (key == "ATM_Withdraw")
+            //{
+            //    Game1.player.Money += number;
+            //    bankAccount.ActualBalance -= number;
+            //}
+
+            Game1.activeClickableMenu = null;
         }
 
         private void TimeEvents_AfterDayStarted(object sender, EventArgs e)
         {
-            if (Game1.IsMasterGame)
-            {
-                //if (bankAccount.DailyMoneyOrder > 0 && bankAccount.DailyMoneyOrder < Game1.player.Money)
-                //{
-                //    Game1.player.Money -= bankAccount.DailyMoneyOrder;
-                //    bankAccount.ActualBalance += bankAccount.DailyMoneyOrder;
-                //    Game1.addHUDMessage(new HUDMessage(i18n.Get("Daily_Deposite") + ": " + bankAccount.DailyMoneyOrder + "g", 2));
-                //}
+            //if (Game1.IsMasterGame)
+            //{
+            //    if (bankAccount.DailyMoneyOrder > 0 && bankAccount.DailyMoneyOrder < Game1.player.Money)
+            //    {
+            //        Game1.player.Money -= bankAccount.DailyMoneyOrder;
+            //        bankAccount.ActualBalance += bankAccount.DailyMoneyOrder;
+            //        Game1.addHUDMessage(new HUDMessage(i18n.Get("Daily_Deposite") + ": " + bankAccount.DailyMoneyOrder + "g", 2));
+            //    }
 
-                //setInterest();
+            //    setInterest();
 
-                //if (Game1.dayOfMonth == 1)
-                //{
-                //    if (Game1.currentSeason.ToLower() == "spring")
-                //        setCreditLine();
+            //    if (Game1.dayOfMonth == 1)
+            //    {
+            //        if (Game1.currentSeason.ToLower() == "spring")
+            //            setCreditLine();
 
-                //    payInterest();
-                //}
-            }
+            //        payInterest();
+            //    }
+            //}
         }
 
         private void SaveEvents_BeforeSave(object sender, System.EventArgs e)
         {
             //if (Game1.IsMasterGame)
-                //Helper.Data.WriteSaveData("Platonymous.ATM.BankAccount", bankAccount);
+            //    Helper.Data.WriteSaveData("Platonymous.ATM.BankAccount", bankAccount);
         }
 
         private void SaveEvents_AfterLoad(object sender, System.EventArgs e)
         {
             if (!Game1.IsMasterGame)
                 return;
+
+            bankAccount = Helper.Data.ReadSaveData<BankAccount>("Platonymous.ATM.BankAccount");
+            if (bankAccount == null)
+            {
+                bankAccount = new BankAccount();
+                setCreditLine();
+            }
+        }
+
+        private void setCreditLine()
+        {
+            //int line = (int)(Math.Floor(Math.Floor(PyTK.PyUtils.calc(config.CreditLine, new KeyValuePair<string, object>("value", (Math.Max(0, bankAccount.Balance) + Game1.player.Money)))) / 1000) * 1000);
+            //if (line > bankAccount.CreditLine)
+            //{
+            //    bankAccount.CreditLine = line;
+            //    if (config.Credit)
+            //        Game1.addHUDMessage(new HUDMessage(i18n.Get("New_Credit") + ": " + line + "g", 2));
+            //}
+        }
+
+        private void setInterest()
+        {
+            //float value = bankAccount.ActualBalance;
+
+            //if (value == 0)
+            //    return;
+
+            //float interest = value * (value < 0 ? config.CreditInterest : config.GainInterest);
+            //bankAccount.UnpaidInterest += (interest / 28);
+        }
+
+        private void payInterest()
+        {
+            //int charge = (int)Math.Floor(Math.Abs(bankAccount.UnpaidInterest));
+            //int value = (int)Math.Floor(bankAccount.UnpaidInterest);
+
+            //if (bankAccount.UnpaidInterest == 0 || charge == 0)
+            //    return;
+
+            //if (bankAccount.UnpaidInterest > 0 || bankAccount.AvailableMoney >= Math.Abs(bankAccount.UnpaidInterest))
+            //{
+            //    Game1.addHUDMessage(new HUDMessage(i18n.Get("Interest") + ": " + value + "g", 2));
+            //    bankAccount.ActualBalance += bankAccount.UnpaidInterest;
+            //    bankAccount.UnpaidInterest = 0;
+            //}
+            //else
+            //{
+            //    bankAccount.UnpaidInterest = bankAccount.AvailableMoney - Math.Abs(bankAccount.UnpaidInterest);
+            //    bankAccount.ActualBalance = 0 - bankAccount.CreditLine;
+            //    if (Game1.player.Money > charge)
+            //    {
+            //        Game1.player.Money -= charge;
+            //        bankAccount.UnpaidInterest += charge;
+            //        Game1.addHUDMessage(new HUDMessage(i18n.Get("Interest") + ": " + value + "g", 2));
+            //    }
+            //    else
+            //    {
+            //        bankAccount.UnpaidInterest += Game1.player.Money;
+            //        Game1.player.Money = 0;
+            //        Game1.addHUDMessage(new HUDMessage(i18n.Get("Interest") + ": " + (Game1.player.Money * -1) + "g", 2));
+            //    }
+            //}
         }
     }
 }
